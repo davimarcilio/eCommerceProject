@@ -14,6 +14,7 @@ const userSchematic = new mongoose.Schema({
   admin: { type: Boolean, required: false },
   createdAt: { type: Date, required: true, default: new Date() },
   birthDate: { type: Date, required: true },
+  image: { type: String, required: false, default: null },
 });
 
 module.exports = mongoose.model("UserModel", userSchematic);
