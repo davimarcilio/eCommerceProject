@@ -9,6 +9,8 @@ databaseConnection();
 const startServer = require("./controllers/startController");
 const productsRoutes = require("./routes/productsRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
+const userRoutes = require("./routes/userRoutes");
 app.use("/products", express.json(), productsRoutes);
 app.use("/category", express.json(), categoryRoutes);
+app.use("/user", express.json(), userRoutes);
 app.listen(process.env.PORT, startServer(process.env.PORT));
