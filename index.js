@@ -3,25 +3,12 @@ const app = express();
 
 require("dotenv").config();
 
-////////////////////////////////MongoDB////////////////////////
-const mongoose = require("mongoose");
-mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGODB_URL);
-let db = mongoose.connection;
+const databaseConnection = require("./database/mongo");
+databaseConnection();
 
-db.on("error", () => {
-  console.error("MongoDB connection error");
-});
-
-db.once("open", () => {
-  console.log("MongoDB connection oppened");
-});
-
-db.once("close", () => {
-  console.log("MongoDB connection closed");
-});
-///////////////////////MongoDB/////////////////
 const startServer = require("./controllers/startController");
 const productsRoutes = require("./routes/productsRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
 app.use("/products", express.json(), productsRoutes);
+app.use("/category", express.json(), categoryRoutes);
 app.listen(process.env.PORT, startServer(process.env.PORT));
