@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const sizes = new mongoose.Schema({
+const Sizes = new mongoose.Schema({
   size: { type: String, required: true },
   qtd: { type: Number, required: true },
 });
@@ -7,7 +7,7 @@ const sizes = new mongoose.Schema({
 const productSchematic = new mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: false },
-  sizes: [sizes],
+  sizes: [Sizes],
   //sizes have a array of objects example [{
   // 	"size": "GG",
   // 	"qtd": 6
