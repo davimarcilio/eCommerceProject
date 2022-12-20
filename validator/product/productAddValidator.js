@@ -8,7 +8,7 @@ const schema = Joi.object({
       qtd: Joi.number().required().min(1).max(1000),
     })
   ),
-  category: Joi.string().min(20).max(30).required().trim(),
+  categoryId: Joi.string().min(20).max(30).required().trim(),
   price: Joi.number().required(),
   createdAt: Joi.date(),
   updatedAt: Joi.date(),
