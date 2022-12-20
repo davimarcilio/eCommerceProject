@@ -1,8 +1,8 @@
-const CardModel = require("../models/Cart");
+const CartModel = require("../models/Cart");
 module.exports = {
   addCart: async (req, res) => {
     try {
-      const Cart = new CardModel(req.body);
+      const Cart = new CartModel(req.body);
       const doc = await Cart.save();
       return res.status(201).json(doc);
     } catch (error) {
@@ -27,30 +27,28 @@ module.exports = {
   },
   updateCartById: async (req, res) => {
     try {
-      const selectedCart = await CardModel.findById(req.params.id);
-      let teste = selectedCart.products.map((product) => {
-        if (product.productId === req.body.products.productId) {
-          product.productQtd++;
-          return product;
-        } else {
-          return product;
-        }
-      });
-      if (!!teste) {
-        const doc = await CardModel.findByIdAndUpdate(req.params.id, {
-          ...req.body,
+      const selectedCart = await CartModel.findById(req.params.id);
+      const selectedProducts = selectedCart.products;
+      const found = selectedProducts.find(
+        (product) =>
+          product.productId === req.body.products.productId &&
+          product.productSize === req.body.products.productSize
+      );
+      if (!!!found) {
+        await CartModel.findByIdAndUpdate(req.params.id, {
+          products: [...selectedProducts, req.body.products],
         });
-        console.log(doc);
       } else {
-        const doc = await CardModel.findByIdAndUpdate(req.params.id, {
-          ...req.body,
-          products: teste,
-        });
-        console.log(doc);
+        selectedProducts.map((product) =>
+          product.productId === req.body.products.productId &&
+          product.productSize === req.body.products.productSize
+            ? product.productQtd++
+            : product
+        );
+        selectedCart.save();
       }
-
-      const docUpdated = await CardModel.findById(req.params.id);
-      return res.status(200).json(docUpdated);
+      const updatedCart = await CartModel.findById(req.params.id);
+      return res.status(200).send(updatedCart);
     } catch (error) {
       return res.status(500).send(error);
     }
