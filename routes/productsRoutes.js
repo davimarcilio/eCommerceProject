@@ -11,6 +11,11 @@ router.delete("/delete/:id", productController.deleteProductById);
 
 // Update Product by id
 router.patch("/update/:id", productController.updateProductById);
+// add a image to the product
+router.patch("/update/image/:id", productController.updateImageProductById);
+
+//remove a image from the product
+router.patch("/remove/image/:id", productController.removeImageProductById);
 
 //Find all
 router.get("/all", productController.getAllProduct);

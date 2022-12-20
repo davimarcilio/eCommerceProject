@@ -55,4 +55,33 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  updateImageProductById: async (req, res) => {
+    try {
+      const selectedProduct = await ProductModel.findById(req.params.id);
+      console.log(selectedProduct.images);
+      await ProductModel.findByIdAndUpdate(req.params.id, {
+        images: [...selectedProduct.images, req.body.imageUrl],
+      });
+      const docUpdated = await ProductModel.findById(req.params.id);
+      return res.status(200).json(docUpdated);
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
+  removeImageProductById: async (req, res) => {
+    try {
+      const selectedProduct = await ProductModel.findById(req.params.id);
+      console.log(selectedProduct.images);
+      const filteredImages = selectedProduct.images.filter(
+        (imageUrl) => imageUrl !== req.body.imageUrl
+      );
+      await ProductModel.findByIdAndUpdate(req.params.id, {
+        images: filteredImages,
+      });
+      const docUpdated = await ProductModel.findById(req.params.id);
+      return res.status(200).json(docUpdated);
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
 };
