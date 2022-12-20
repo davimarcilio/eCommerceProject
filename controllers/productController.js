@@ -1,6 +1,7 @@
 const ProductModel = require("../models/Product");
 const productAddValidator = require("../validator/product/productAddValidator");
 const productUpdateValidator = require("../validator/product/productUpdateValidator");
+const productARImageValidator = require("../validator/product/productARImageValidator");
 module.exports = {
   addProduct: async (req, res) => {
     const { error } = productAddValidator.validate(req.body);
@@ -56,9 +57,12 @@ module.exports = {
     }
   },
   updateImageProductById: async (req, res) => {
+    const { error } = productARImageValidator.validate(req.body);
+    if (error) {
+      return res.status(400).json(error);
+    }
     try {
       const selectedProduct = await ProductModel.findById(req.params.id);
-      console.log(selectedProduct.images);
       await ProductModel.findByIdAndUpdate(req.params.id, {
         images: [...selectedProduct.images, req.body.imageUrl],
       });
@@ -69,9 +73,12 @@ module.exports = {
     }
   },
   removeImageProductById: async (req, res) => {
+    const { error } = productARImageValidator.validate(req.body);
+    if (error) {
+      return res.status(400).json(error);
+    }
     try {
       const selectedProduct = await ProductModel.findById(req.params.id);
-      console.log(selectedProduct.images);
       const filteredImages = selectedProduct.images.filter(
         (imageUrl) => imageUrl !== req.body.imageUrl
       );
