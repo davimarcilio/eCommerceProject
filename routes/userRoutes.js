@@ -4,8 +4,15 @@ const userController = require("../controllers/userController");
 
 //Insert user on the database
 router.post("/add", userController.addUser);
+
+//Delete user on the database
+
+router.delete("/delete/:id", userController.deleteUserById);
 // Update user by id
 router.patch("/update/:id", userController.updateUserById);
+
+//Add image to user
+router.patch("/image/add/:id", userController.addImageUser);
 
 //Find all
 router.get("/all", userController.getAllUser);

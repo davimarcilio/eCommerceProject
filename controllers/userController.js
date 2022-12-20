@@ -4,6 +4,7 @@ const saltRounds = 10;
 const registerValidate = require("../validator/user/userRegisterValidator");
 const loginValidate = require("../validator/user/userLoginValidator");
 const updateValidate = require("../validator/user/userUpdateValidator");
+const userAddImageValidator = require("../validator/user/userAddImageValidator");
 const CPF = require("cpf-check");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -92,6 +93,32 @@ module.exports = {
       await UserModel.findByIdAndUpdate(req.params.id, req.body);
       const docUpdated = await UserModel.findById(req.params.id);
       return res.status(200).json(docUpdated);
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
+  addImageUser: async (req, res) => {
+    const { error } = userAddImageValidator.validate(req.body);
+    if (error) {
+      return res.status(400).json(error);
+    }
+    try {
+      await UserModel.findByIdAndUpdate(req.params.id, {
+        image: req.body.imageUrl,
+      });
+      const updateUser = await UserModel.findById(req.params.id);
+      res.status(200).json(updateUser);
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
+  deleteUserById: async (req, res) => {
+    try {
+      const doc = await UserModel.findByIdAndDelete(req.params.id);
+      if (!!!doc) {
+        return res.status(200).send("user already deleted");
+      }
+      res.status(200).json(doc);
     } catch (error) {
       return res.status(500).send(error);
     }

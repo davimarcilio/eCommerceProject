@@ -153,6 +153,9 @@ module.exports = {
   removeCartById: async (req, res) => {
     try {
       const deleteCart = await CartModel.findByIdAndDelete(req.params.id);
+      if (!!!deleteCart) {
+        return res.status(200).send("cart is already deleted");
+      }
       return res.status(200).json(deleteCart);
     } catch (error) {
       return res.status(500).send(error);
