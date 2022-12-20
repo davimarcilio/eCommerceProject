@@ -3,9 +3,20 @@ const router = express.Router();
 const cartController = require("../controllers/cartController");
 
 //Insert Product on the database
-router.post("/add", cartController.addCart);
+router.post("/create", cartController.addCart);
 // // Update Product by id
-router.patch("/update/:id", cartController.updateCartById);
+router.patch("/add/product/:id", cartController.addProductOnCartById);
+
+router.patch("/remove/product/:id", cartController.removeProductFromCartById);
+
+router.patch(
+  "/increment/product/:id",
+  cartController.incrementProductFromCartById
+);
+router.patch(
+  "/decrement/product/:id",
+  cartController.decrementProductFromCartById
+);
 
 // //Find all
 router.get("/all", cartController.getAllCarts);

@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const productsSchematic = new mongoose.Schema({
   productId: { type: String, required: true },
   productSize: { type: String, required: true },
+  productSizeId: { type: String, required: true },
   productQtd: { type: Number, required: true, default: 1 },
 });
 const cartSchematic = new mongoose.Schema({
