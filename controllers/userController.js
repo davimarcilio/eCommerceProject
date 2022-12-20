@@ -1,9 +1,9 @@
 const UserModel = require("../models/User");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-const registerValidate = require("../validator/userRegisterValidator");
-const loginValidate = require("../validator/userLoginValidator");
-const updateValidate = require("../validator/userUpdateValidator");
+const registerValidate = require("../validator/user/userRegisterValidator");
+const loginValidate = require("../validator/user/userLoginValidator");
+const updateValidate = require("../validator/user/userUpdateValidator");
 const CPF = require("cpf-check");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
