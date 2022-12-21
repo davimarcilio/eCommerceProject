@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import HeadersButton from "./HeaderButton";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function Header() {
+  const userAuth = useSelector((state) => state.user);
+
   return (
     <header className="bg-blue-300 p-5 flex justify-evenly items-center shadow-2xl">
       <Link to={"/"}>
@@ -16,8 +19,8 @@ export default function Header() {
           <Link to={"/carrinho"}>
             <HeadersButton>Carrinho</HeadersButton>
           </Link>
-          <Link to={"/login"}>
-            <HeadersButton>User</HeadersButton>
+          <Link to={!userAuth.logged ? "/login" : "/user"}>
+            <HeadersButton>{userAuth.logged ? "User" : "Login"}</HeadersButton>
           </Link>
         </ul>
       </nav>

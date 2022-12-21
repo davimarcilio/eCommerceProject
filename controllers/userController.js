@@ -42,19 +42,15 @@ module.exports = {
   loginUser: async (req, res) => {
     const { error } = loginValidate.validate(req.body);
     if (error) {
-      return res.status(400).json(error);
+      return res.status(400).send(error.details[0].message);
     }
     try {
       const selectedUser = await UserModel.findOne({ email: req.body.email });
       if (!selectedUser) {
-        return res
-          .status(400)
-          .json({ error: { message: "Email is not exist" } });
+        return res.status(400).send("Email is not exist");
       }
       if (!bcrypt.compareSync(req.body.password, selectedUser.password)) {
-        return res
-          .status(400)
-          .json({ error: { message: "Password is incorrect" } });
+        return res.status(400).send("Password is incorrect");
       }
       const token = jwt.sign(
         {
@@ -68,11 +64,13 @@ module.exports = {
         { expiresIn: "7d" }
       );
       return res.status(200).header("authorization-token", token).json({
-        success: "User has been loged successfully",
+        _id: selectedUser._id,
+        success: true,
+        message: "User has been loged successfully",
         authorizationToken: token,
       });
     } catch (error) {
-      return res.status(400).json(error);
+      return res.status(400).send(error);
     }
   },
   getAllUser: async (req, res) => {

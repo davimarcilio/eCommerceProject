@@ -1,20 +1,20 @@
-import React, { useRef, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { loginUser } from "../../redux/login/loginSlice";
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+
   async function handleLogin(e) {
     e.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:3000/user/login", {
-        email,
-        password,
-      });
-      console.log(response.data.authorizationToken);
-    } catch (error) {
-      console.log(error);
-    }
+    dispatch(loginUser({ email, password }));
+    navigate("/");
   }
 
   return (
