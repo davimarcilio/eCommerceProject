@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 
 require("dotenv").config();
-
+const cors = require("cors");
 const databaseConnection = require("./database/mongo");
 databaseConnection();
 
@@ -14,6 +14,9 @@ const userRoutes = require("./routes/userRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const joinRoutes = require("./collectionsJoin/index");
 const searchRoutes = require("./search/index");
+
+//development uses
+app.use(cors());
 
 app.use("/products", express.json(), productsRoutes);
 app.use("/category", express.json(), categoryRoutes);

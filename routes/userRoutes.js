@@ -5,9 +5,12 @@ const userController = require("../controllers/userController");
 //Insert user on the database
 router.post("/add", userController.addUser);
 
-//Delete user on the database
+//Login user on the client side
+router.post("/login", userController.loginUser);
 
+//Delete user on the database
 router.delete("/delete/:id", userController.deleteUserById);
+
 // Update user by id
 router.patch("/update/:id", userController.updateUserById);
 

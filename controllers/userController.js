@@ -44,26 +44,36 @@ module.exports = {
     if (error) {
       return res.status(400).json(error);
     }
-
-    const selectedUser = await UserModel.findOne({ email: req.body.email });
-    if (!selectedUser) {
-      return res.status(400).send("Email is not exist");
+    try {
+      const selectedUser = await UserModel.findOne({ email: req.body.email });
+      if (!selectedUser) {
+        return res
+          .status(400)
+          .json({ error: { message: "Email is not exist" } });
+      }
+      if (!bcrypt.compareSync(req.body.password, selectedUser.password)) {
+        return res
+          .status(400)
+          .json({ error: { message: "Password is incorrect" } });
+      }
+      const token = jwt.sign(
+        {
+          _id: selectedUser._id,
+          name: selectedUser.name,
+          email: selectedUser.email,
+          sex: selectedUser.sex,
+          admin: !!selectedUser.admin ? true : false,
+        },
+        process.env.SECRET_JWT,
+        { expiresIn: "7d" }
+      );
+      return res.status(200).header("authorization-token", token).json({
+        success: "User has been loged successfully",
+        authorizationToken: token,
+      });
+    } catch (error) {
+      return res.status(400).json(error);
     }
-    if (!bcrypt.compareSync(req.body.password, selectedUser.password)) {
-      return res.status(400).send("Password is incorrect");
-    }
-    const token = jwt.sign(
-      {
-        _id: selectedUser._id,
-        name: selectedUser.name,
-        email: selectedUser.email,
-        sex: selectedUser.sex,
-        admin: !!selectedUser.admin ? true : false,
-      },
-      process.env.SECRET_JWT,
-      { expiresIn: "7d" }
-    );
-    return res.header("authorization-token", token);
   },
   getAllUser: async (req, res) => {
     try {
