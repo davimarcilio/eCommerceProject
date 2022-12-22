@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../../redux/login/loginSlice";
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const userAuth = useSelector((state) => state.user);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -16,6 +17,12 @@ export default function Login(props) {
     dispatch(loginUser({ email, password }));
     navigate("/");
   }
+
+  useEffect(() => {
+    if (userAuth.logged) {
+      return navigate("/");
+    }
+  }, [userAuth.logged]);
 
   return (
     <div>
@@ -35,6 +42,12 @@ export default function Login(props) {
           Logar
         </button>
       </form>
+      <section>
+        <h1>Nao possui cadastro?</h1>
+        <Link to={"/register"}>
+          <button>Cadastrar</button>
+        </Link>
+      </section>
     </div>
   );
 }
