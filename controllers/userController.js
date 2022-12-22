@@ -12,11 +12,19 @@ module.exports = {
   addUser: async (req, res) => {
     const { error } = registerValidate.validate(req.body);
     if (error) {
-      return res.status(400).json(error);
+      return res.status(400).send(error.details[0].message);
     }
-    const selectedUser = await UserModel.findOne({ email: req.body.email });
-    if (selectedUser) {
+    const selectedUserEmail = await UserModel.findOne({
+      email: req.body.email,
+    });
+    if (selectedUserEmail) {
       return res.status(400).send("Email already registered");
+    }
+    const selectedUserCpf = await UserModel.findOne({
+      cpf: req.body.cpf,
+    });
+    if (selectedUserCpf) {
+      return res.status(400).send("CPF already registered");
     }
     if (!CPF.validate(req.body.cpf)) {
       return res.status(400).send("Please enter a valid CPF");
@@ -34,7 +42,9 @@ module.exports = {
     });
     try {
       const doc = await User.save();
-      return res.status(201).json(doc);
+      return res
+        .status(201)
+        .json({ doc, success: "user successfully created" });
     } catch (err) {
       return res.status(500).json(err);
     }

@@ -37,12 +37,10 @@ export const registerUser = createAsyncThunk(
         "http://localhost:3000/user/add",
         payload
       );
-      console.log(responseRegister);
       return {
         user: responseRegister,
       };
     } catch (error) {
-      console.log(error.response.data);
       return { error: error.response.data };
     }
   }
@@ -56,7 +54,16 @@ export const loginSlice = createSlice({
     error: "",
     authToken: "",
   },
-  reducers: {},
+
+  reducers: {
+    reset: (state) => {
+      state.status = "not authorized";
+      state.user = {};
+      state.logged = false;
+      state.error = "";
+      state.authToken = "";
+    },
+  },
   extraReducers(builder) {
     builder
       .addCase(loginUser.pending, (state, action) => {
@@ -82,8 +89,13 @@ export const loginSlice = createSlice({
         state.status = "created";
         // Add any fetched posts to the array
         // console.log(action.payload);
-        state.user = action.payload.user;
-        state.error = action.payload.error;
+        if (!!action.payload.user) {
+          state.user = action.payload.user.data.doc;
+          state.error = action.payload.user.data.success;
+        }
+        if (!!action.payload.error) {
+          state.error = action.payload.error;
+        }
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.status = "failed";
@@ -93,6 +105,6 @@ export const loginSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { login } = loginSlice.actions;
+export const { reset } = loginSlice.actions;
 
 export default loginSlice.reducer;

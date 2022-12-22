@@ -1,29 +1,109 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { validate } from "cpf-check";
+import { useDispatch, useSelector } from "react-redux";
+
+import mask from "./functions/inputCPFMask";
+import { useNavigate } from "react-router-dom";
+import clearServerMessage from "./functions/clearServerMessage";
+import setServerMessageObject from "./functions/setServerMessageObject";
+
 import EyeSVG from "./assets/images/EyeSVG";
 import EyeSlashSVG from "./assets/images/EyeSlashSVG";
 import InputError from "./components/InputError";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../../redux/login/loginSlice";
-import { useNavigate } from "react-router-dom";
-function mask(i) {
-  var v = i.value;
-  if (isNaN(v[v.length - 1])) {
-    i.value = v.substring(0, v.length - 1);
-    return;
-  }
-
-  i.setAttribute("maxlength", "14");
-  if (v.length === 3 || v.length === 7) i.value += ".";
-  if (v.length === 11) i.value += "-";
-}
+import ErrorModal from "./components/ErrorModal";
+import { registerUser, reset } from "../../redux/user/userSlice";
 
 export default function Register() {
-  const navigate = useNavigate();
   const [cpf, setCpf] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfPassword, setShowConfPassword] = useState(false);
+  const [password, setPassword] = useState("");
+  const [confPassword, setConfPassword] = useState("");
+  const [equalPassword, setEqualPassword] = useState(false);
+  const [serverMessage, setServerMessage] = useState({
+    active: false,
+    error: false,
+    message: "",
+  });
+  const navigate = useNavigate();
   const user = useSelector((state) => state.user);
+  const classNameInput = "py-2 px-5 rounded border border-gray-400 shadow-lg";
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (password === confPassword) {
+      return setEqualPassword(true);
+    }
+    return setEqualPassword(false);
+  }, [password, confPassword]);
+
+  useEffect(() => {
+    let timer;
+    switch (user.error) {
+      case "Email already registered":
+        setServerMessage(setServerMessageObject("Email ja registrado"));
+        timer = setTimeout(() => {
+          clearServerMessage(setServerMessage);
+          dispatch(reset());
+        }, 3000);
+        return () => {
+          clearTimeout(timer);
+        };
+      case "":
+        setServerMessage({
+          active: false,
+          error: false,
+          message: "",
+        });
+
+        break;
+      case "user successfully created":
+        setServerMessage({
+          active: true,
+          error: false,
+          message: "Registro bem sucedido",
+        });
+        setTimeout(() => {
+          dispatch(reset());
+          navigate("/login");
+        }, 3000);
+        break;
+      case "CPF already registered":
+        setServerMessage(setServerMessageObject("CPF ja cadastrado"));
+
+        timer = setTimeout(() => {
+          clearServerMessage(setServerMessage);
+          dispatch(reset());
+        }, 3000);
+        return () => {
+          clearTimeout(timer);
+        };
+      case "Please enter a valid CPF":
+        setServerMessage(setServerMessageObject("CPF invalido"));
+        timer = setTimeout(() => {
+          clearServerMessage(setServerMessage);
+          dispatch(reset());
+        }, 3000);
+        return () => {
+          clearTimeout(timer);
+        };
+      default:
+        setServerMessage(
+          setServerMessage(
+            "Houve um erro inesperado tente novamente mais tarde"
+          )
+        );
+        timer = setTimeout(() => {
+          clearServerMessage(setServerMessage);
+          dispatch(reset());
+        }, 3000);
+        return () => {
+          clearTimeout(timer);
+        };
+    }
+  }, [user]);
+
   const {
     register,
     handleSubmit,
@@ -33,44 +113,19 @@ export default function Register() {
     delete data.confPassword;
     data.birthDate = new Date(data.birthDate).getTime();
     dispatch(registerUser(data));
-    if (!!user.error) {
-      setServerError({ error: true, message: user.error });
-    } else {
-      navigate("/");
-    }
   };
-  const classNameInput = "py-2 px-5 rounded border border-gray-400 shadow-lg";
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfPassword, setShowConfPassword] = useState(false);
-  const [password, setPassword] = useState("");
-  const [confPassword, setConfPassword] = useState("");
-  const [equalPassword, setEqualPassword] = useState(false);
-  const [serverError, setServerError] = useState({
-    error: false,
-    message: "",
-  });
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (password === confPassword) {
-      return setEqualPassword(true);
-    }
-    return setEqualPassword(false);
-  }, [password, confPassword]);
-
   return (
     <form
       className="max-w-2xl m-auto flex flex-col gap-5 mt-8 mb-8 font-Poppins"
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div
-        className={`absolute flex mt-6 left-0 top-0 w-full ${
-          !serverError.error ? "hidden" : ""
-        }`}
-      >
-        <h1 className="m-auto p-10 rounded-lg shadow-2xl text-xl font-bold shadow-black bg-red-500 w-full max-w-md ">
-          {serverError.error ? serverError.message : ""}
-        </h1>
-      </div>
+      <ErrorModal
+        active={serverMessage.active}
+        type={serverMessage.error}
+        message={serverMessage.message}
+      />
+      {/* NOME */}
+
       <div className="flex flex-col relative">
         <input
           className={classNameInput}
@@ -90,7 +145,7 @@ export default function Register() {
         />
         <InputError>{errors.name?.message}</InputError>
       </div>
-
+      {/* CPF */}
       <div className="flex flex-col relative">
         <input
           className={classNameInput}
@@ -117,11 +172,10 @@ export default function Register() {
           placeholder={"CPF"}
         />
         <InputError>
-          {errors.cpf?.message}
-          {!!!errors.cpf?.message && !cpf ? "CPF invalido!" : ""}
+          {!!errors.cpf?.message && !cpf ? "CPF invalido!" : ""}
         </InputError>
       </div>
-
+      {/* Email */}
       <div className="flex flex-col relative">
         <input
           className={classNameInput}
@@ -141,7 +195,7 @@ export default function Register() {
         />
         <InputError>{errors.email?.message}</InputError>
       </div>
-
+      {/* Password */}
       <div className="flex flex-col">
         <div className=" relative flex justify-center items-center">
           <input
@@ -173,8 +227,7 @@ export default function Register() {
           </button>
         </div>
         <InputError>
-          {errors.password?.message}
-          {!equalPassword ? "Senhas não considem" : ""}
+          {!equalPassword ? "Senhas não considem" : errors.password?.message}
         </InputError>
       </div>
       {/* //////////////////////////////////// CONFIRMA PASSWORD */}
@@ -200,6 +253,7 @@ export default function Register() {
         </div>
         <InputError>{!equalPassword ? "Senhas não considem" : ""}</InputError>
       </div>
+      {/* DATA */}
       <div className="flex flex-col relative">
         <input
           className={classNameInput}
@@ -219,20 +273,28 @@ export default function Register() {
         />
         <InputError>{errors.birthDate?.message}</InputError>
       </div>
+      {/* SEXO */}
       <div className="flex flex-col relative">
         <select
+          defaultChecked={""}
           className={classNameInput}
-          {...register("sex", { required: "Sexo é obrigatório" })}
+          {...register("sex", {
+            required: "Genero é obrigatório",
+          })}
         >
-          <option value="M">Masculino</option>
-          <option value="F">Feminino</option>
+          <option value={""} disabled>
+            Genero
+          </option>
+          <option value={"M"}>Masculino</option>
+          <option value={"F"}>Feminino</option>
         </select>
-        <p role={"alert"}>{errors.sex?.message}</p>
+        <InputError>{errors.sex?.message}</InputError>
       </div>
 
       <input
         className={`${classNameInput} w-1/3 self-center transition-all font-bold hover:bg-slate-400`}
         type="submit"
+        value={"Cadastrar"}
       />
     </form>
   );
