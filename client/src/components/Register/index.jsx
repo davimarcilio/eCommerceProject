@@ -5,7 +5,9 @@ import EyeSVG from "./assets/images/EyeSVG";
 import EyeSlashSVG from "./assets/images/EyeSlashSVG";
 import InputError from "./components/InputError";
 import { useEffect } from "react";
-
+import { useDispatch, useSelector } from "react-redux";
+import { registerUser } from "../../redux/login/loginSlice";
+import { useNavigate } from "react-router-dom";
 function mask(i) {
   var v = i.value;
   if (isNaN(v[v.length - 1])) {
@@ -19,7 +21,9 @@ function mask(i) {
 }
 
 export default function Register() {
+  const navigate = useNavigate();
   const [cpf, setCpf] = useState(false);
+  const user = useSelector((state) => state.user);
   const {
     register,
     handleSubmit,
@@ -27,7 +31,13 @@ export default function Register() {
   } = useForm();
   const onSubmit = (data) => {
     delete data.confPassword;
-    console.log(data);
+    data.birthDate = new Date(data.birthDate).getTime();
+    dispatch(registerUser(data));
+    if (!!user.error) {
+      setServerError({ error: true, message: user.error });
+    } else {
+      navigate("/");
+    }
   };
   const classNameInput = "py-2 px-5 rounded border border-gray-400 shadow-lg";
   const [showPassword, setShowPassword] = useState(false);
@@ -35,14 +45,15 @@ export default function Register() {
   const [password, setPassword] = useState("");
   const [confPassword, setConfPassword] = useState("");
   const [equalPassword, setEqualPassword] = useState(false);
-
+  const [serverError, setServerError] = useState({
+    error: false,
+    message: "",
+  });
+  const dispatch = useDispatch();
   useEffect(() => {
     if (password === confPassword) {
-      console.log("considem");
-
       return setEqualPassword(true);
     }
-    console.log("Náo considem");
     return setEqualPassword(false);
   }, [password, confPassword]);
 
@@ -51,6 +62,15 @@ export default function Register() {
       className="max-w-2xl m-auto flex flex-col gap-5 mt-8 mb-8 font-Poppins"
       onSubmit={handleSubmit(onSubmit)}
     >
+      <div
+        className={`absolute flex mt-6 left-0 top-0 w-full ${
+          !serverError.error ? "hidden" : ""
+        }`}
+      >
+        <h1 className="m-auto p-10 rounded-lg shadow-2xl text-xl font-bold shadow-black bg-red-500 w-full max-w-md ">
+          {serverError.error ? serverError.message : ""}
+        </h1>
+      </div>
       <div className="flex flex-col relative">
         <input
           className={classNameInput}

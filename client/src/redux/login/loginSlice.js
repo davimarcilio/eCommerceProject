@@ -29,11 +29,29 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+export const registerUser = createAsyncThunk(
+  "http://localhost:3000/user/add",
+  async (payload) => {
+    try {
+      const responseRegister = await axios.post(
+        "http://localhost:3000/user/add",
+        payload
+      );
+      console.log(responseRegister);
+      return {
+        user: responseRegister,
+      };
+    } catch (error) {
+      console.log(error.response.data);
+      return { error: error.response.data };
+    }
+  }
+);
 export const loginSlice = createSlice({
   name: "login",
   initialState: {
     status: "not authorized",
-    user: { name: "Login" },
+    user: {},
     logged: false,
     error: "",
     authToken: "",
@@ -55,6 +73,21 @@ export const loginSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error;
+      });
+    builder
+      .addCase(registerUser.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.status = "created";
+        // Add any fetched posts to the array
+        // console.log(action.payload);
+        state.user = action.payload.user;
+        state.error = action.payload.error;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload.error;
       });
   },
 });
