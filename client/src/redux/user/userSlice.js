@@ -30,28 +30,28 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const loginLocalUser = createAsyncThunk(
-  "http://localhost:3000/user/login",
-  async (payload) => {
-    try {
-      const responseUser = await axios.get(
-        `http://localhost:3000/join/usercart/${localStorage.getItem("")}`,
-        {
-          headers: {
-            // "authorization-token": responseLogin.data.authorizationToken,
-          },
-        }
-      );
-      return {
-        user: responseUser.data,
-        // success: responseLogin.data.message,
-        // authToken: responseLogin.data.authorizationToken,
-      };
-    } catch (error) {
-      return { error: error.response.data };
-    }
-  }
-);
+// export const loginLocalUser = createAsyncThunk(
+//   "http://localhost:3000/user/login",
+//   async (payload) => {
+//     try {
+//       const responseUser = await axios.get(
+//         `http://localhost:3000/join/usercart/${localStorage.getItem("")}`,
+//         {
+//           headers: {
+//             "authorization-token": responseLogin.data.authorizationToken,
+//           },
+//         }
+//       );
+//       return {
+//         user: responseUser.data,
+//         success: responseLogin.data.message,
+//         authToken: responseLogin.data.authorizationToken,
+//       };
+//     } catch (error) {
+//       return { error: error.response.data };
+//     }
+//   }
+// );
 export const registerUser = createAsyncThunk(
   "http://localhost:3000/user/add",
   async (payload) => {
