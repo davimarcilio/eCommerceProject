@@ -3,10 +3,10 @@ import { useForm } from "react-hook-form";
 import { validate } from "cpf-check";
 import { useDispatch, useSelector } from "react-redux";
 
-import mask from "./functions/inputCPFMask";
+import mask from "../functions/inputCPFMask";
 import { useNavigate } from "react-router-dom";
-import clearServerMessage from "./functions/clearServerMessage";
-import setServerMessageObject from "./functions/setServerMessageObject";
+import clearServerMessage from "../functions/clearServerMessage";
+import setServerMessageObject from "../functions/setServerMessageObject";
 
 import EyeSVG from "../assets/images/EyeSVG";
 import EyeSlashSVG from "../assets/images/EyeSlashSVG";
@@ -115,187 +115,189 @@ export default function Register() {
     dispatch(registerUser(data));
   };
   return (
-    <form
-      className="max-w-2xl m-auto flex flex-col gap-5 mt-8 mb-8 font-Poppins"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <div>
       <ErrorModal
         active={serverMessage.active}
         type={serverMessage.error}
         message={serverMessage.message}
       />
-      {/* NOME */}
+      <form
+        className="max-w-2xl m-auto flex flex-col gap-5 mt-8 mb-8 font-Poppins"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        {/* NOME */}
 
-      <div className="flex flex-col relative">
-        <input
-          className={classNameInput}
-          type={"text"}
-          {...register("name", {
-            required: "Nome é obrigatório!",
-            maxLength: {
-              value: 50,
-              message: "Nome não pode ter mais de 50 caracteres!",
-            },
-            minLength: {
-              value: 3,
-              message: "Nome não pode ter menos de 3 caracteres!",
-            },
-          })}
-          placeholder={"Nome"}
-        />
-        <InputError>{errors.name?.message}</InputError>
-      </div>
-      {/* CPF */}
-      <div className="flex flex-col relative">
-        <input
-          className={classNameInput}
-          type={"text"}
-          onInput={(e) => {
-            mask(e.target);
-            setCpf(validate(e.target.value));
-          }}
-          {...register("cpf", {
-            required: "CPF é obrigatório!",
-            maxLength: {
-              value: 14,
-              message: "CPF invalido!",
-            },
-            minLength: {
-              value: 14,
-              message: "CPF invalido!",
-            },
-            pattern: {
-              value: /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/,
-              message: "CPF invalido!",
-            },
-          })}
-          placeholder={"CPF"}
-        />
-        <InputError>
-          {!!errors.cpf?.message && !cpf ? "CPF invalido!" : ""}
-        </InputError>
-      </div>
-      {/* Email */}
-      <div className="flex flex-col relative">
-        <input
-          className={classNameInput}
-          type={"email"}
-          {...register("email", {
-            required: "Email é obrigatório!",
-            maxLength: {
-              value: 200,
-              message: "Email não pode ter mais de 200 caracteres!",
-            },
-            minLength: {
-              value: 6,
-              message: "Email não pode ter menos de 6 caracteres!",
-            },
-          })}
-          placeholder={"example@example.com"}
-        />
-        <InputError>{errors.email?.message}</InputError>
-      </div>
-      {/* Password */}
-      <div className="flex flex-col">
-        <div className=" relative flex justify-center items-center">
+        <div className="flex flex-col relative">
           <input
-            onInput={(e) => setPassword(e.target.value)}
-            className={`${classNameInput} w-full`}
-            type={showPassword ? "text" : "password"}
-            {...register("password", {
-              required: "Senha é obrigatório!",
-
+            className={classNameInput}
+            type={"text"}
+            {...register("name", {
+              required: "Nome é obrigatório!",
               maxLength: {
                 value: 50,
-                message: "Senha não pode ter mais de 200 caracteres!",
+                message: "Nome não pode ter mais de 50 caracteres!",
+              },
+              minLength: {
+                value: 3,
+                message: "Nome não pode ter menos de 3 caracteres!",
+              },
+            })}
+            placeholder={"Nome"}
+          />
+          <InputError>{errors.name?.message}</InputError>
+        </div>
+        {/* CPF */}
+        <div className="flex flex-col relative">
+          <input
+            className={classNameInput}
+            type={"text"}
+            onInput={(e) => {
+              mask(e.target);
+              setCpf(validate(e.target.value));
+            }}
+            {...register("cpf", {
+              required: "CPF é obrigatório!",
+              maxLength: {
+                value: 14,
+                message: "CPF invalido!",
+              },
+              minLength: {
+                value: 14,
+                message: "CPF invalido!",
+              },
+              pattern: {
+                value: /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/,
+                message: "CPF invalido!",
+              },
+            })}
+            placeholder={"CPF"}
+          />
+          <InputError>
+            {!!errors.cpf?.message && !cpf ? "CPF invalido!" : ""}
+          </InputError>
+        </div>
+        {/* Email */}
+        <div className="flex flex-col relative">
+          <input
+            className={classNameInput}
+            type={"email"}
+            {...register("email", {
+              required: "Email é obrigatório!",
+              maxLength: {
+                value: 200,
+                message: "Email não pode ter mais de 200 caracteres!",
               },
               minLength: {
                 value: 6,
-                message: "Senha não pode ter menos de 6 caracteres!",
+                message: "Email não pode ter menos de 6 caracteres!",
               },
             })}
-            placeholder={"Senha"}
+            placeholder={"example@example.com"}
           />
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              showPassword ? setShowPassword(false) : setShowPassword(true);
-            }}
-            className="absolute right-2 h-full"
-          >
-            {!showPassword ? <EyeSVG></EyeSVG> : <EyeSlashSVG />}
-          </button>
+          <InputError>{errors.email?.message}</InputError>
         </div>
-        <InputError>
-          {!equalPassword ? "Senhas não considem" : errors.password?.message}
-        </InputError>
-      </div>
-      {/* //////////////////////////////////// CONFIRMA PASSWORD */}
-      <div className="flex flex-col">
-        <div className=" relative flex justify-center items-center">
-          <input
-            onInput={(e) => setConfPassword(e.target.value)}
-            className={`${classNameInput} w-full`}
-            type={showConfPassword ? "text" : "password"}
-            placeholder={"Confirme sua senha"}
-          />
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              showConfPassword
-                ? setShowConfPassword(false)
-                : setShowConfPassword(true);
-            }}
-            className="absolute right-2  h-full"
-          >
-            {!showConfPassword ? <EyeSVG></EyeSVG> : <EyeSlashSVG />}
-          </button>
-        </div>
-        <InputError>{!equalPassword ? "Senhas não considem" : ""}</InputError>
-      </div>
-      {/* DATA */}
-      <div className="flex flex-col relative">
-        <input
-          className={classNameInput}
-          type={"date"}
-          {...register("birthDate", {
-            required: "Aniversário é obrigatório!",
-            maxLength: {
-              value: 200,
-              message: "Aniversário não pode ter mais de 200 caracteres!",
-            },
-            minLength: {
-              value: 6,
-              message: "Aniversário não pode ter menos de 6 caracteres!",
-            },
-          })}
-          placeholder={"Data de aniversario"}
-        />
-        <InputError>{errors.birthDate?.message}</InputError>
-      </div>
-      {/* SEXO */}
-      <div className="flex flex-col relative">
-        <select
-          defaultChecked={""}
-          className={classNameInput}
-          {...register("sex", {
-            required: "Genero é obrigatório",
-          })}
-        >
-          <option value={""} disabled>
-            Genero
-          </option>
-          <option value={"M"}>Masculino</option>
-          <option value={"F"}>Feminino</option>
-        </select>
-        <InputError>{errors.sex?.message}</InputError>
-      </div>
+        {/* Password */}
+        <div className="flex flex-col">
+          <div className=" relative flex justify-center items-center">
+            <input
+              onInput={(e) => setPassword(e.target.value)}
+              className={`${classNameInput} w-full`}
+              type={showPassword ? "text" : "password"}
+              {...register("password", {
+                required: "Senha é obrigatório!",
 
-      <input
-        className={`${classNameInput} w-1/3 self-center transition-all font-bold hover:bg-slate-400`}
-        type="submit"
-        value={"Cadastrar"}
-      />
-    </form>
+                maxLength: {
+                  value: 50,
+                  message: "Senha não pode ter mais de 200 caracteres!",
+                },
+                minLength: {
+                  value: 6,
+                  message: "Senha não pode ter menos de 6 caracteres!",
+                },
+              })}
+              placeholder={"Senha"}
+            />
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                showPassword ? setShowPassword(false) : setShowPassword(true);
+              }}
+              className="absolute right-2 h-full"
+            >
+              {!showPassword ? <EyeSVG></EyeSVG> : <EyeSlashSVG />}
+            </button>
+          </div>
+          <InputError>
+            {!equalPassword ? "Senhas não considem" : errors.password?.message}
+          </InputError>
+        </div>
+        {/* //////////////////////////////////// CONFIRMA PASSWORD */}
+        <div className="flex flex-col">
+          <div className=" relative flex justify-center items-center">
+            <input
+              onInput={(e) => setConfPassword(e.target.value)}
+              className={`${classNameInput} w-full`}
+              type={showConfPassword ? "text" : "password"}
+              placeholder={"Confirme sua senha"}
+            />
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                showConfPassword
+                  ? setShowConfPassword(false)
+                  : setShowConfPassword(true);
+              }}
+              className="absolute right-2  h-full"
+            >
+              {!showConfPassword ? <EyeSVG></EyeSVG> : <EyeSlashSVG />}
+            </button>
+          </div>
+          <InputError>{!equalPassword ? "Senhas não considem" : ""}</InputError>
+        </div>
+        {/* DATA */}
+        <div className="flex flex-col relative">
+          <input
+            className={classNameInput}
+            type={"date"}
+            {...register("birthDate", {
+              required: "Aniversário é obrigatório!",
+              maxLength: {
+                value: 200,
+                message: "Aniversário não pode ter mais de 200 caracteres!",
+              },
+              minLength: {
+                value: 6,
+                message: "Aniversário não pode ter menos de 6 caracteres!",
+              },
+            })}
+            placeholder={"Data de aniversario"}
+          />
+          <InputError>{errors.birthDate?.message}</InputError>
+        </div>
+        {/* SEXO */}
+        <div className="flex flex-col relative">
+          <select
+            defaultChecked={""}
+            className={classNameInput}
+            {...register("sex", {
+              required: "Genero é obrigatório",
+            })}
+          >
+            <option value={""} disabled>
+              Genero
+            </option>
+            <option value={"M"}>Masculino</option>
+            <option value={"F"}>Feminino</option>
+          </select>
+          <InputError>{errors.sex?.message}</InputError>
+        </div>
+
+        <input
+          className={`${classNameInput} w-1/3 self-center transition-all font-bold hover:bg-slate-400`}
+          type="submit"
+          value={"Cadastrar"}
+        />
+      </form>
+    </div>
   );
 }

@@ -57,7 +57,7 @@ module.exports = {
     try {
       const selectedUser = await UserModel.findOne({ email: req.body.email });
       if (!selectedUser) {
-        return res.status(400).send("Email is not exist");
+        return res.status(400).send("Email don`t exists");
       }
       if (!bcrypt.compareSync(req.body.password, selectedUser.password)) {
         return res.status(400).send("Password is incorrect");
@@ -65,10 +65,6 @@ module.exports = {
       const token = jwt.sign(
         {
           _id: selectedUser._id,
-          name: selectedUser.name,
-          email: selectedUser.email,
-          sex: selectedUser.sex,
-          admin: !!selectedUser.admin ? true : false,
         },
         process.env.SECRET_JWT,
         { expiresIn: "7d" }
@@ -80,7 +76,7 @@ module.exports = {
         authorizationToken: token,
       });
     } catch (error) {
-      return res.status(400).send(error);
+      return res.status(400).json(error);
     }
   },
   getAllUser: async (req, res) => {

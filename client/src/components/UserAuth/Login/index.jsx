@@ -3,13 +3,21 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../../../redux/user/userSlice";
+import { loginUser, reset } from "../../../redux/user/userSlice";
+import clearServerMessage from "../functions/clearServerMessage";
+import setServerMessageObject from "../functions/setServerMessageObject";
 import EyeSVG from "../assets/images/EyeSVG";
 import EyeSlashSVG from "../assets/images/EyeSlashSVG";
 import InputError from "../components/InputError";
 import ErrorModal from "../components/ErrorModal";
+
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [serverMessage, setServerMessage] = useState({
+    active: false,
+    error: false,
+    message: "",
+  });
   const userAuth = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -25,12 +33,72 @@ export default function Login() {
   } = useForm();
   const onSubmit = (data) => {
     dispatch(loginUser(data));
-    navigate("/");
+    // navigate("/");
   };
+  useEffect(() => {
+    let timer;
+    switch (userAuth.error) {
+      case "Email don`t exists":
+        setServerMessage(setServerMessageObject("Email não cadastrado."));
+        timer = setTimeout(() => {
+          clearServerMessage(setServerMessage);
+          dispatch(reset());
+        }, 3000);
+        return () => {
+          clearTimeout(timer);
+        };
+      case "":
+        setServerMessage({
+          active: false,
+          error: false,
+          message: "",
+        });
+
+        break;
+      case "User has been loged successfully":
+        setServerMessage({
+          active: true,
+          error: false,
+          message: "Login bem sucedido",
+        });
+        setTimeout(() => {
+          dispatch(reset());
+          navigate("/login");
+        }, 3000);
+        break;
+      case "Password is incorrect":
+        setServerMessage(setServerMessageObject("Senha incorreta"));
+
+        timer = setTimeout(() => {
+          clearServerMessage(setServerMessage);
+          dispatch(reset());
+        }, 3000);
+        return () => {
+          clearTimeout(timer);
+        };
+      default:
+        setServerMessage(
+          setServerMessage(
+            "Houve um erro inesperado tente novamente mais tarde"
+          )
+        );
+        timer = setTimeout(() => {
+          clearServerMessage(setServerMessage);
+          dispatch(reset());
+        }, 3000);
+        return () => {
+          clearTimeout(timer);
+        };
+    }
+  }, [userAuth]);
   const classNameInput = "py-2 px-5 rounded border border-gray-400 shadow-lg";
   return (
     <div>
-      <ErrorModal active={true} type={false} message={"text"} />
+      <ErrorModal
+        active={serverMessage.active}
+        type={serverMessage.error}
+        message={serverMessage.message}
+      />
       <form
         method="POST"
         className="max-w-2xl m-auto flex flex-col gap-5 mt-8 mb-8 font-Poppins"
@@ -67,7 +135,7 @@ export default function Login() {
 
                 maxLength: {
                   value: 50,
-                  message: "Senha não pode ter mais de 200 caracteres!",
+                  message: "Senha não pode ter mais de 50 caracteres!",
                 },
                 minLength: {
                   value: 6,
@@ -94,10 +162,15 @@ export default function Login() {
           value={"Entrar"}
         />
       </form>
-      <section>
-        <h1>Nao possui cadastro?</h1>
+      <hr />
+      <section className="mt-4 m-auto flex flex-col justify-center items-center gap-6">
+        <h1 className="font-extrabold text-2xl">Não possui cadastro?</h1>
         <Link to={"/register"}>
-          <button>Cadastrar</button>
+          <button
+            className={`${classNameInput} px-6 pt-2 transition-all font-bold hover:bg-slate-400`}
+          >
+            Cadastrar
+          </button>
         </Link>
       </section>
     </div>

@@ -19,13 +19,13 @@ export const loginUser = createAsyncThunk(
           },
         }
       );
-
       return {
         user: responseUser.data,
+        success: responseLogin.data.message,
         authToken: responseLogin.data.authorizationToken,
       };
     } catch (error) {
-      return { error };
+      return { error: error.response.data };
     }
   }
 );
@@ -73,13 +73,19 @@ export const loginSlice = createSlice({
         state.status = "authorized";
         // Add any fetched posts to the array
         // console.log(action.payload);
-        state.user = action.payload.user;
-        state.logged = true;
-        state.authToken = action.payload.authToken;
+        if (!!action.payload.user) {
+          state.user = action.payload.user;
+          state.logged = true;
+          state.authToken = action.payload.authToken;
+          state.error = action.payload.success;
+        }
+        if (!!action.payload.error) {
+          state.error = action.payload.error;
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";
-        state.error = action.error;
+        state.error = action.payload.error;
       });
     builder
       .addCase(registerUser.pending, (state, action) => {
