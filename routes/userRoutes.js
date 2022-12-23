@@ -21,7 +21,7 @@ router.patch("/image/add/:id", jwtValidator, userController.addImageUser);
 router.get("/all", jwtValidator, userController.getAllUser);
 
 //Find id by JWTTOKEN
-router.get("/token", jwtValidator, userController.getIdByAuthData);
+router.get("/token/:auth", jwtValidator, userController.getIdByAuthData);
 
 //Find unique by id
 router.get("/:id", jwtValidator, userController.getUserById);

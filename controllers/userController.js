@@ -67,9 +67,8 @@ module.exports = {
           id: selectedUser._id,
         },
         process.env.SECRET_JWT,
-        { expiresIn: "7d" }
+        { expiresIn: 10 }
       );
-      console.log(token);
       return res.status(200).header("authorization-token", token).json({
         _id: selectedUser._id,
         success: true,
@@ -139,17 +138,15 @@ module.exports = {
     }
   },
   getIdByAuthData: async (req, res) => {
-    console.log(req.body);
     // try {
     jwt.verify(
-      req.body.authorizationToken,
+      req.params.auth,
       process.env.SECRET_JWT,
       function (err, decoded) {
         if (err) {
           return res.status(400).send(err);
         }
-        console.log(decoded);
-        return res.status(200).send(decoded);
+        return res.status(200).json(decoded);
       }
     );
   },

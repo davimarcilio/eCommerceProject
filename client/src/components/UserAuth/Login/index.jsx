@@ -50,6 +50,14 @@ export default function Login() {
         });
 
         break;
+      case "unauthorized":
+        setServerMessage({
+          active: false,
+          error: false,
+          message: "",
+        });
+
+        break;
       case "User has been loged successfully":
         setServerMessage({
           active: true,
@@ -72,7 +80,7 @@ export default function Login() {
         };
       default:
         setServerMessage(
-          setServerMessage(
+          setServerMessageObject(
             "Houve um erro inesperado tente novamente mais tarde"
           )
         );

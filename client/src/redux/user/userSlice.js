@@ -30,28 +30,36 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// export const loginLocalUser = createAsyncThunk(
-//   "http://localhost:3000/user/login",
-//   async (payload) => {
-//     try {
-//       const responseUser = await axios.get(
-//         `http://localhost:3000/join/usercart/${localStorage.getItem("")}`,
-//         {
-//           headers: {
-//             "authorization-token": responseLogin.data.authorizationToken,
-//           },
-//         }
-//       );
-//       return {
-//         user: responseUser.data,
-//         success: responseLogin.data.message,
-//         authToken: responseLogin.data.authorizationToken,
-//       };
-//     } catch (error) {
-//       return { error: error.response.data };
-//     }
-//   }
-// );
+export const loginLocalUser = createAsyncThunk(
+  "http://localhost:3000/user/token",
+  async (payload) => {
+    try {
+      const responseUserId = await axios.get(
+        `http://localhost:3000/user/token/${payload.authorizationToken}`,
+        {
+          headers: {
+            "authorization-token": payload.authorizationToken,
+          },
+        }
+      );
+      const responseUser = await axios.get(
+        `http://localhost:3000/join/usercart/${responseUserId.data.id}`,
+        {
+          headers: {
+            "authorization-token": payload.authorizationToken,
+          },
+        }
+      );
+      return {
+        user: responseUser.data,
+        authToken: payload.authorizationToken,
+      };
+    } catch (error) {
+      console.log(error);
+      return { error: error.response.data };
+    }
+  }
+);
 export const registerUser = createAsyncThunk(
   "http://localhost:3000/user/add",
   async (payload) => {
@@ -127,6 +135,25 @@ export const loginSlice = createSlice({
         }
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload.error;
+      });
+    builder
+      .addCase(loginLocalUser.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(loginLocalUser.fulfilled, (state, action) => {
+        state.status = "authorized";
+        if (!!action.payload.user) {
+          state.user = action.payload.user;
+          state.logged = true;
+          state.authToken = action.payload.authToken;
+        }
+        if (!!action.payload.error) {
+          state.error = action.payload.error;
+        }
+      })
+      .addCase(loginLocalUser.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload.error;
       });
