@@ -23,4 +23,7 @@ router.get("/all", jwtValidator, userController.getAllUser);
 //Find unique by id
 router.get("/:id", jwtValidator, userController.getUserById);
 
+//Find id by JWTTOKEN
+// router.get("/token", jwtValidator, userController.getIdByAuthData);
+
 module.exports = router;

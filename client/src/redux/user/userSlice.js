@@ -12,7 +12,7 @@ export const loginUser = createAsyncThunk(
         }
       );
       const responseUser = await axios.get(
-        `http://localhost:3000/user/${responseLogin.data._id}`,
+        `http://localhost:3000/join/usercart/${responseLogin.data._id}`,
         {
           headers: {
             "authorization-token": responseLogin.data.authorizationToken,
@@ -29,6 +29,29 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
+
+export const loginLocalUser = createAsyncThunk(
+  "http://localhost:3000/user/login",
+  async (payload) => {
+    try {
+      const responseUser = await axios.get(
+        `http://localhost:3000/join/usercart/${localStorage.getItem("")}`,
+        {
+          headers: {
+            // "authorization-token": responseLogin.data.authorizationToken,
+          },
+        }
+      );
+      return {
+        user: responseUser.data,
+        // success: responseLogin.data.message,
+        // authToken: responseLogin.data.authorizationToken,
+      };
+    } catch (error) {
+      return { error: error.response.data };
+    }
+  }
+);
 export const registerUser = createAsyncThunk(
   "http://localhost:3000/user/add",
   async (payload) => {
@@ -37,6 +60,9 @@ export const registerUser = createAsyncThunk(
         "http://localhost:3000/user/add",
         payload
       );
+      await axios.post("http://localhost:3000/cart/create", {
+        userId: responseRegister.data.doc._id,
+      });
       return {
         user: responseRegister,
       };
@@ -71,12 +97,11 @@ export const loginSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "authorized";
-        // Add any fetched posts to the array
-        // console.log(action.payload);
         if (!!action.payload.user) {
           state.user = action.payload.user;
           state.logged = true;
           state.authToken = action.payload.authToken;
+          localStorage.setItem("authorization-token", action.payload.authToken);
           state.error = action.payload.success;
         }
         if (!!action.payload.error) {
@@ -93,8 +118,6 @@ export const loginSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.status = "created";
-        // Add any fetched posts to the array
-        // console.log(action.payload);
         if (!!action.payload.user) {
           state.user = action.payload.user.data.doc;
           state.error = action.payload.user.data.success;

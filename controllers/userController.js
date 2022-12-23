@@ -64,11 +64,12 @@ module.exports = {
       }
       const token = jwt.sign(
         {
-          _id: selectedUser._id,
+          id: selectedUser._id,
         },
         process.env.SECRET_JWT,
         { expiresIn: "7d" }
       );
+      console.log(token);
       return res.status(200).header("authorization-token", token).json({
         _id: selectedUser._id,
         success: true,
@@ -137,4 +138,26 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  // getIdByAuthData: async (req, res) => {
+  //   console.log(req.body);
+  //   // try {
+  //   jwt.verify(
+  //     req.body.authorizationToken,
+  //     process.env.SECRET_JWT,
+  //     function (err, decoded) {
+  //       if (err) {
+  //         return res.status(400).send(err);
+  //       }
+  //       console.log(decoded);
+  //       return res.status(200).send(decoded);
+  //     }
+  //   );
+  //   // console.log(req.body.authorizationToken);
+  //   // console.log(authJWT);
+  //   // return res.status(200).send(authJWT);
+  //   // } catch (error) {
+  //   // console.log(error);
+  //   // return res.status(500).send(error);
+  //   // }
+  // },
 };

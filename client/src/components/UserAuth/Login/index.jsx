@@ -21,11 +21,6 @@ export default function Login() {
   const userAuth = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  useEffect(() => {
-    if (userAuth.logged) {
-      return navigate("/");
-    }
-  }, [userAuth.logged]);
   const {
     register,
     handleSubmit,
@@ -62,8 +57,7 @@ export default function Login() {
           message: "Login bem sucedido",
         });
         setTimeout(() => {
-          dispatch(reset());
-          navigate("/login");
+          navigate("/");
         }, 3000);
         break;
       case "Password is incorrect":
