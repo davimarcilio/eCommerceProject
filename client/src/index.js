@@ -4,13 +4,13 @@ import "./styles/global.css";
 import Nav from "./Nav";
 import reportWebVitals from "./reportWebVitals";
 import Home from "./components/Home";
-import Login from "./components/Login";
+import Login from "./components/UserAuth/Login";
 import { Provider } from "react-redux";
 import store from "./redux/store/store";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NotFound from "./components/NotFound";
 import User from "./components/User";
-import Register from "./components/Register";
+import Register from "./components/UserAuth/Register";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>

@@ -8,11 +8,11 @@ import { useNavigate } from "react-router-dom";
 import clearServerMessage from "./functions/clearServerMessage";
 import setServerMessageObject from "./functions/setServerMessageObject";
 
-import EyeSVG from "./assets/images/EyeSVG";
-import EyeSlashSVG from "./assets/images/EyeSlashSVG";
-import InputError from "./components/InputError";
-import ErrorModal from "./components/ErrorModal";
-import { registerUser, reset } from "../../redux/user/userSlice";
+import EyeSVG from "../assets/images/EyeSVG";
+import EyeSlashSVG from "../assets/images/EyeSlashSVG";
+import InputError from "../components/InputError";
+import ErrorModal from "../components/ErrorModal";
+import { registerUser, reset } from "../../../redux/user/userSlice";
 
 export default function Register() {
   const [cpf, setCpf] = useState(false);
