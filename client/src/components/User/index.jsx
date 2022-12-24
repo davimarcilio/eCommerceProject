@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import UserData from "./components/UserData/UserData";
 import UserDataState from "./components/UserData/UserDataState";
 import UserDataPhone from "./components/UserData/UserDataPhone";
@@ -9,7 +9,7 @@ import UserDataAddress from "./components/UserData/UserDataAddress";
 import UserDataNumber from "./components/UserData/UserDataNumber";
 import UserDataGender from "./components/UserData/UserDataGenter";
 import SetUpdateUser from "./functions/SetUpdatedUser";
-import { updateUser } from "../../redux/user/userEditSlice";
+import Loggout from "./components/Loggout";
 import moment from "moment";
 import { useEffect } from "react";
 
@@ -27,7 +27,6 @@ export default function User() {
   const [NUMBER, setNUMBER] = useState("");
   const [SEX, setSEX] = useState("");
   const [AGE, setAGE] = useState("");
-  const dispatch = useDispatch();
   useEffect(() => {
     if (!!user) {
       setNAME(user.name);
@@ -72,6 +71,7 @@ export default function User() {
           <UserDataGender tag={"Sexo"} value={SEX}></UserDataGender>
           <UserData editable={false} tag={"Idade"} value={AGE}></UserData>
           <SetUpdateUser />
+          <Loggout />
         </main>
       </div>
     );

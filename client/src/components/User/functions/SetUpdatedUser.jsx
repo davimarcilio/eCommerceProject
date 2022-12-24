@@ -1,10 +1,18 @@
 import { useDispatch, useSelector } from "react-redux";
-import React from "react";
+import React, { useEffect } from "react";
 import { updateUser } from "../../../redux/user/userEditSlice";
+import { loginLocalUser } from "../../../redux/user/userSlice";
 
 export default function SetUpdateUser() {
   const editedUser = useSelector((state) => state.userEdit);
   const userId = useSelector((state) => state.user.user.user._id);
+  useEffect(() => {
+    dispatch(
+      loginLocalUser({
+        authorizationToken: localStorage.getItem("authorization-token"),
+      })
+    );
+  }, [editedUser.success]);
   const dispatch = useDispatch();
   return (
     <button
