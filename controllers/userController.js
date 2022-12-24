@@ -67,7 +67,7 @@ module.exports = {
           id: selectedUser._id,
         },
         process.env.SECRET_JWT,
-        { expiresIn: 10 }
+        { expiresIn: "7d" }
       );
       return res.status(200).header("authorization-token", token).json({
         _id: selectedUser._id,

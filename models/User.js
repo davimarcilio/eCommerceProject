@@ -7,6 +7,7 @@ const userSchematic = new mongoose.Schema({
   password: { type: String, required: true, minlengh: 6, maxlenght: 20 },
   phone: { type: String, required: false },
   address: { type: String, required: false },
+  number: { type: String, required: false },
   city: { type: String, required: false },
   state: { type: String, required: false },
   zip: { type: String, required: false },
