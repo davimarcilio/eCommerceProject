@@ -100,9 +100,6 @@ module.exports = {
     if (error) {
       return res.status(400).json(error);
     }
-    if (!CPF.validate(req.body.cpf)) {
-      return res.status(400).send("Please enter a valid CPF");
-    }
     try {
       await UserModel.findByIdAndUpdate(req.params.id, req.body);
       const docUpdated = await UserModel.findById(req.params.id);

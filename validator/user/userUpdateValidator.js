@@ -9,6 +9,7 @@ const schema = Joi.object({
   city: Joi.string().min(2).trim(),
   state: Joi.string().min(2).trim(),
   zip: Joi.string().min(5).trim(),
+  number: Joi.string().min(1).trim(),
   sex: Joi.string().valid("M", "F"),
   birthDate: Joi.date().timestamp(),
 });

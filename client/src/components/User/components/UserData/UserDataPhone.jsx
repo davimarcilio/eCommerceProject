@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addPhone } from "../../../../redux/user/userEditSlice";
 import TelefoneBrasileiroInput from "../BrazilPhone";
 export default function UserData(props) {
   const [edit, setEdit] = useState(false);
   const [editValue, setEditValue] = useState("");
+  const dispatch = useDispatch();
   useEffect(() => {
     return setEditValue(props.value);
-  }, []);
+  }, [props]);
+  useEffect(() => {
+    dispatch(addPhone(editValue));
+  }, [editValue]);
+
   return (
     <div
       className={`flex gap-2 ${

@@ -1,4 +1,37 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { useSelector } from "react-redux";
+import axios from "axios";
+export function removeEmptyFilter(obj) {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, v]) => v != null && v !== "")
+  );
+}
+export const updateUser = createAsyncThunk(
+  "http://localhost:3000/user/update",
+  async (payload) => {
+    try {
+      const userId = payload._id;
+      delete payload._id;
+      const treatedPayload = removeEmptyFilter(payload);
+      const responseUserUpdate = await axios.patch(
+        `http://localhost:3000/user/update/${userId}`,
+        {
+          ...treatedPayload,
+        },
+        {
+          headers: {
+            "authorization-token": localStorage.getItem("authorization-token"),
+          },
+        }
+      );
+      return {
+        success: responseUserUpdate.data,
+      };
+    } catch (error) {
+      return { error: error.response.data };
+    }
+  }
+);
 
 export const editUserSlice = createSlice({
   name: "editUser",
@@ -12,6 +45,8 @@ export const editUserSlice = createSlice({
     name: "",
     email: "",
     phone: "",
+    success: "",
+    status: "",
   },
 
   reducers: {
@@ -25,6 +60,8 @@ export const editUserSlice = createSlice({
       state.name = "";
       state.email = "";
       state.phone = "";
+      state.success = "";
+      state.status = "";
     },
     addName: (state, { payload }) => {
       state.name = payload;
@@ -54,6 +91,25 @@ export const editUserSlice = createSlice({
     addDataCep: (state, { payload }) => {
       state.zipDataCep = payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(updateUser.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.status = "updated";
+        if (!!action.payload.success) {
+          state.success = action.payload.success;
+        }
+        if (!!action.payload.error) {
+          state.success = action.payload.error;
+        }
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.success = action.payload.error;
+      });
   },
 });
 

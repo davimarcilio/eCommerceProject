@@ -111,7 +111,6 @@ export default function Register() {
   } = useForm();
   const onSubmit = (data) => {
     Reflect.deleteProperty(data, "confPassword");
-    console.log(data);
     data.birthDate = new Date(data.birthDate).getTime();
     dispatch(registerUser(data));
   };
