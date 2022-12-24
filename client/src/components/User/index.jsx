@@ -9,13 +9,13 @@ import UserDataAddress from "./components/UserData/UserDataAddress";
 import UserDataNumber from "./components/UserData/UserDataNumber";
 import UserDataGender from "./components/UserData/UserDataGenter";
 import SetUpdateUser from "./functions/SetUpdatedUser";
+import UserDataImage from "./components/UserData/UserDataImage";
 import Loggout from "./components/Loggout";
 import moment from "moment";
 import { useEffect } from "react";
 
 export default function User() {
   const user = useSelector((state) => state.user.user.user);
-  // const editedUser = useSelector((state) => state.userEdit);
   const [NAME, setNAME] = useState("");
   const [CPF, setCPF] = useState("");
   const [EMAIL, setEMAIL] = useState("");
@@ -52,13 +52,7 @@ export default function User() {
           BEM VIND{user.sex === "M" ? "O" : "A"}
         </h1>
         <main className="flex flex-col justify-center items-center gap-3 my-4 max-w-xl w-full">
-          <div className="w-60 h-60 rounded-full flex justify-center items-center bg-blue-50 border">
-            <img
-              className="w-full h-full p-2 rounded-full border"
-              src={user.image}
-              alt=""
-            />
-          </div>
+          <UserDataImage image={user.image}></UserDataImage>
           <UserData editable={true} tag={"Nome"} value={NAME}></UserData>
           <UserData editable={false} tag={"CPF"} value={CPF}></UserData>
           <UserData editable={true} tag={"Email"} value={EMAIL}></UserData>
