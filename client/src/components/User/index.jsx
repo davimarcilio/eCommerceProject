@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import UserData from "./components/UserData/UserData";
 import UserDataState from "./components/UserData/UserDataState";
@@ -40,7 +41,7 @@ export default function User() {
       setAGE(moment(user.birthDate).fromNow().slice(0, 2));
       return;
     }
-  });
+  }, [user]);
 
   if (!!user) {
     return (
@@ -56,19 +57,18 @@ export default function User() {
               alt=""
             />
           </div>
-          <form className="flex flex-col justify-center items-center gap-3">
-            <UserData editable={true} tag={"Nome"} value={NAME}></UserData>
-            <UserData editable={false} tag={"CPF"} value={CPF}></UserData>
-            <UserData editable={true} tag={"Email"} value={EMAIL}></UserData>
-            <UserDataPhone tag={"Telefone"} value={PHONE}></UserDataPhone>
-            <UserDataCep tag={"CEP"} value={CEP}></UserDataCep>
-            <UserDataState tag={"Estado"} value={STATE}></UserDataState>
-            <UserDataCity tag={"Cidade"} value={CITY}></UserDataCity>
-            <UserDataAddress tag={"Endereço"} value={ADDRESS}></UserDataAddress>
-            <UserDataNumber tag={"Número"} value={NUMBER}></UserDataNumber>
-            <UserDataGender tag={"Sexo"} value={SEX}></UserDataGender>
-            <UserData editable={false} tag={"Idade"} value={AGE}></UserData>
-          </form>
+          <UserData editable={true} tag={"Nome"} value={NAME}></UserData>
+          <UserData editable={false} tag={"CPF"} value={CPF}></UserData>
+          <UserData editable={true} tag={"Email"} value={EMAIL}></UserData>
+          <UserDataPhone tag={"Telefone"} value={PHONE}></UserDataPhone>
+          <UserDataCep tag={"CEP"} value={CEP}></UserDataCep>
+          <UserDataState tag={"Estado"} value={STATE}></UserDataState>
+          <UserDataCity tag={"Cidade"} value={CITY}></UserDataCity>
+          <UserDataAddress tag={"Endereço"} value={ADDRESS}></UserDataAddress>
+          <UserDataNumber tag={"Número"} value={NUMBER}></UserDataNumber>
+          <UserDataGender tag={"Sexo"} value={SEX}></UserDataGender>
+          <UserData editable={false} tag={"Idade"} value={AGE}></UserData>
+          <input type="submit" value="Salvar" />
         </main>
       </div>
     );

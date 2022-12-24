@@ -51,6 +51,7 @@ export default function UserDataGender(props) {
         </div>
       )}
       <button
+        type="button"
         onClick={() => (edit ? setEdit(false) : setEdit(true))}
         className={`text-black ${
           !edit ? "" : "absolute right-0 top-1/2 -translate-y-1/2 px-4"

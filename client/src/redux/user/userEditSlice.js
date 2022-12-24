@@ -9,6 +9,9 @@ export const editUserSlice = createSlice({
     states: "",
     address: "",
     number: "",
+    name: "",
+    email: "",
+    phone: "",
   },
 
   reducers: {
@@ -19,6 +22,18 @@ export const editUserSlice = createSlice({
       state.states = "";
       state.address = "";
       state.number = "";
+      state.name = "";
+      state.email = "";
+      state.phone = "";
+    },
+    addName: (state, { payload }) => {
+      state.name = payload;
+    },
+    addEmail: (state, { payload }) => {
+      state.email = payload;
+    },
+    addPhone: (state, { payload }) => {
+      state.phone = payload;
     },
     addState: (state, { payload }) => {
       state.states = payload;
@@ -51,6 +66,9 @@ export const {
   addAddress,
   addNumber,
   addZip,
+  addName,
+  addEmail,
+  addPhone,
 } = editUserSlice.actions;
 
 export default editUserSlice.reducer;

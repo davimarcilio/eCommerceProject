@@ -1,10 +1,29 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  addName,
+  addEmail,
+  addPhone,
+} from "../../../../redux/user/userEditSlice";
 export default function UserData(props) {
   const [edit, setEdit] = useState(false);
   const [editValue, setEditValue] = useState("");
   useEffect(() => {
     return setEditValue(props.value);
   }, [props]);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    switch (props.tag) {
+      case "Nome":
+        dispatch(addName(editValue));
+        break;
+      case "Email":
+        dispatch(addEmail(editValue));
+        break;
+      default:
+        break;
+    }
+  }, [editValue]);
 
   return (
     <div
@@ -34,6 +53,7 @@ export default function UserData(props) {
       )}
       {props.editable ? (
         <button
+          type="button"
           onClick={() => (edit ? setEdit(false) : setEdit(true))}
           className={`text-black ${
             !edit ? "" : "absolute right-0 top-1/2 -translate-y-1/2 px-4"
