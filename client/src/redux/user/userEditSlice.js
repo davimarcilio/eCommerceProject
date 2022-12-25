@@ -69,6 +69,7 @@ export const editUserSlice = createSlice({
     name: "",
     email: "",
     phone: "",
+    sex: "",
     success: "",
     status: "",
   },
@@ -84,11 +85,15 @@ export const editUserSlice = createSlice({
       state.name = "";
       state.email = "";
       state.phone = "";
+      state.sex = "";
       state.success = "";
       state.status = "";
     },
     addName: (state, { payload }) => {
       state.name = payload;
+    },
+    addSex: (state, { payload }) => {
+      state.sex = payload;
     },
     addEmail: (state, { payload }) => {
       state.email = payload;
@@ -166,6 +171,7 @@ export const {
   addName,
   addEmail,
   addPhone,
+  addSex,
 } = editUserSlice.actions;
 
 export default editUserSlice.reducer;

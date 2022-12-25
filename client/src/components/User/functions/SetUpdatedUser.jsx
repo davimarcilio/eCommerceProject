@@ -24,6 +24,7 @@ export default function SetUpdateUser() {
             email: editedUser.email,
             phone: editedUser.phone,
             zip: editedUser.zip,
+            sex: editedUser.sex,
             number: editedUser.number,
             city: editedUser.city,
             state: editedUser.states,

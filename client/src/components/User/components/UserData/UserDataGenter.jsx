@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { addSex } from "../../../../redux/user/userEditSlice";
+
 export default function UserDataGender(props) {
   const [edit, setEdit] = useState(false);
   const [editValue, setEditValue] = useState("");
+  const dispatch = useDispatch();
   useEffect(() => {
     return setEditValue(props.value);
   }, [props]);
-
+  useEffect(() => {
+    dispatch(addSex(editValue));
+  }, [editValue]);
   return (
     <div
       className={`flex gap-2 ${
@@ -27,17 +33,6 @@ export default function UserDataGender(props) {
           <option value="F">Feminino</option>
         </select>
       ) : (
-        // <input
-        //   onChange={(e) => setEditValue(e.target.value)}
-        //   className="w-full h-full py-2 px-4 text-black"
-        //   type="text"
-        //   value={editValue}
-        //   placeholder={
-        //     !!!editValue
-        //       ? props.tag + ":  " + "Adicione"
-        //       : props.tag + ":  " + editValue
-        //   }
-        // />
         <div className={`flex gap-2 `}>
           <h1>{props.tag}:</h1>
           <p>
