@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
 import axios from "axios";
 export function removeEmptyFilter(obj) {
   return Object.fromEntries(
@@ -32,7 +31,32 @@ export const updateUser = createAsyncThunk(
     }
   }
 );
-
+export const addImageUser = createAsyncThunk(
+  "http://localhost:3000/user/image/add",
+  async (payload) => {
+    try {
+      const userId = payload._id;
+      delete payload._id;
+      const treatedPayload = removeEmptyFilter(payload);
+      const responseUserUpdate = await axios.patch(
+        `http://localhost:3000/user/image/add/${userId}`,
+        {
+          ...treatedPayload,
+        },
+        {
+          headers: {
+            "authorization-token": localStorage.getItem("authorization-token"),
+          },
+        }
+      );
+      return {
+        success: responseUserUpdate.data,
+      };
+    } catch (error) {
+      return { error: error.response.data };
+    }
+  }
+);
 export const editUserSlice = createSlice({
   name: "editUser",
   initialState: {
@@ -107,6 +131,23 @@ export const editUserSlice = createSlice({
         }
       })
       .addCase(updateUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.success = action.payload.error;
+      });
+    builder
+      .addCase(addImageUser.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(addImageUser.fulfilled, (state, action) => {
+        state.status = "updated";
+        if (!!action.payload.success) {
+          state.success = action.payload.success;
+        }
+        if (!!action.payload.error) {
+          state.success = action.payload.error;
+        }
+      })
+      .addCase(addImageUser.rejected, (state, action) => {
         state.status = "failed";
         state.success = action.payload.error;
       });

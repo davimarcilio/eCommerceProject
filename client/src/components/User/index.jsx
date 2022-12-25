@@ -17,6 +17,7 @@ import { useEffect } from "react";
 export default function User() {
   const user = useSelector((state) => state.user.user.user);
   const [NAME, setNAME] = useState("");
+  const [IMAGE, setIMAGE] = useState("");
   const [CPF, setCPF] = useState("");
   const [EMAIL, setEMAIL] = useState("");
   const [PHONE, setPHONE] = useState("");
@@ -30,6 +31,7 @@ export default function User() {
   useEffect(() => {
     if (!!user) {
       setNAME(user.name);
+      setIMAGE(user.image);
       setCPF(user.cpf);
       setEMAIL(user.email);
       setPHONE(user.phone);
@@ -39,7 +41,6 @@ export default function User() {
       setNUMBER(user.number);
       setSEX(user.sex);
       setCITY(user.city);
-      console.log(PHONE);
       setAGE(moment(user.birthDate).fromNow().slice(0, 2));
       return;
     }
@@ -51,19 +52,30 @@ export default function User() {
         <h1 className=" text-2xl font-semibold">
           BEM VIND{user.sex === "M" ? "O" : "A"}
         </h1>
-        <main className="flex flex-col justify-center items-center gap-3 my-4 max-w-xl w-full">
-          <UserDataImage image={user.image}></UserDataImage>
-          <UserData editable={true} tag={"Nome"} value={NAME}></UserData>
-          <UserData editable={false} tag={"CPF"} value={CPF}></UserData>
-          <UserData editable={true} tag={"Email"} value={EMAIL}></UserData>
-          <UserDataPhone tag={"Telefone"} value={PHONE}></UserDataPhone>
-          <UserDataCep tag={"CEP"} value={CEP}></UserDataCep>
-          <UserDataState tag={"Estado"} value={STATE}></UserDataState>
-          <UserDataCity tag={"Cidade"} value={CITY}></UserDataCity>
-          <UserDataAddress tag={"Endereço"} value={ADDRESS}></UserDataAddress>
-          <UserDataNumber tag={"Número"} value={NUMBER}></UserDataNumber>
-          <UserDataGender tag={"Sexo"} value={SEX}></UserDataGender>
-          <UserData editable={false} tag={"Idade"} value={AGE}></UserData>
+        <main className="flex flex-col justify-center items-center gap-4 my-4 w-full">
+          <UserDataImage image={IMAGE}></UserDataImage>
+          <div className="flex flex-row gap-10 w-full px-56">
+            <div className="flex flex-col gap-4 w-full">
+              <h1 className="text-lg font-bold ">Informações pessoais</h1>
+              <UserData editable={true} tag={"Nome"} value={NAME}></UserData>
+              <UserData editable={false} tag={"CPF"} value={CPF}></UserData>
+              <UserData editable={true} tag={"Email"} value={EMAIL}></UserData>
+              <UserDataPhone tag={"Telefone"} value={PHONE}></UserDataPhone>
+              <UserDataGender tag={"Sexo"} value={SEX}></UserDataGender>
+              <UserData editable={false} tag={"Idade"} value={AGE}></UserData>
+            </div>
+            <div className="flex flex-col gap-4 w-full">
+              <h1 className="text-lg font-bold ">Endereço de entrega</h1>
+              <UserDataCep tag={"CEP"} value={CEP}></UserDataCep>
+              <UserDataState tag={"Estado"} value={STATE}></UserDataState>
+              <UserDataCity tag={"Cidade"} value={CITY}></UserDataCity>
+              <UserDataAddress
+                tag={"Endereço"}
+                value={ADDRESS}
+              ></UserDataAddress>
+              <UserDataNumber tag={"Número"} value={NUMBER}></UserDataNumber>
+            </div>
+          </div>
           <SetUpdateUser />
           <Loggout />
         </main>
