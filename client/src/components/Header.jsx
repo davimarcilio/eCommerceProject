@@ -27,7 +27,7 @@ export default function Header() {
       </Link>
       <nav>
         <ul className="flex float-right gap-28 text-2xl">
-          <Link to={"/produtos"}>
+          <Link to={"/products"}>
             <HeadersButton>Produtos</HeadersButton>
           </Link>
           <Link to={"/carrinho"}>
